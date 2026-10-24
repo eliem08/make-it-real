@@ -26,8 +26,8 @@ class Tests(unittest.TestCase):
         box = {"template": "enclosure", "quantity": 25, "model": {"x_mm": 200, "y_mm": 60, "z_mm": 30, "wall_mm": 1.0}}
         q = quote(box)
         valid = {o["method"]: o for o in q["options"]}
-        self.assertFalse(valid["fdm"]["valid"])   # wall too thin
-        self.assertFalse(valid["sla"]["valid"])   # too big
+        self.assertFalse(valid["fdm"]["valid"])  # wall too thin
+        self.assertFalse(valid["sla"]["valid"])  # too big
         self.assertFalse(valid["injection_mold"]["valid"])  # min qty
         self.assertIsNone(q["cheapest"])
         box["model"].update(x_mm=90, wall_mm=1.6)

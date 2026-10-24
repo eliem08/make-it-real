@@ -1,7 +1,8 @@
 """Manufacturability checks and quoting for AI-designed physical products."""
+
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 __all__ = ["Template", "Method", "TEMPLATES", "METHODS", "validate", "quote", "production_order"]
 
@@ -44,7 +45,16 @@ METHODS = {
     "vinyl_cut": Method("vinyl_cut", 10, 0.9, ((100, 0.6),), min_qty=10, lead_days=4, max_colors=2),
     "fdm": Method("fdm", 0, 0.08, ((20, 0.9), (100, 0.75)), lead_days=4, min_wall_mm=1.2, build_mm=(250, 210, 210)),
     "sla": Method("sla", 0, 0.22, ((20, 0.9), (100, 0.8)), lead_days=6, min_wall_mm=0.8, build_mm=(145, 145, 175)),
-    "injection_mold": Method("injection_mold", 6000, 0.002, ((5000, 0.7),), min_qty=1000, lead_days=35, min_wall_mm=1.0, build_mm=(400, 400, 300)),
+    "injection_mold": Method(
+        "injection_mold",
+        6000,
+        0.002,
+        ((5000, 0.7),),
+        min_qty=1000,
+        lead_days=35,
+        min_wall_mm=1.0,
+        build_mm=(400, 400, 300),
+    ),
 }
 
 TEMPLATES = {
@@ -88,7 +98,7 @@ def _3d_issues(m: Method, model: dict) -> tuple[list, list]:
 def validate(design: dict, method_key: str) -> tuple[list, list]:
     t = TEMPLATES[design["template"]]
     m = METHODS[method_key]
-    errors, warnings = (_print_issues(t, m, design["artwork"]) if t.kind == "print" else _3d_issues(m, design["model"]))
+    errors, warnings = _print_issues(t, m, design["artwork"]) if t.kind == "print" else _3d_issues(m, design["model"])
     if design["quantity"] < m.min_qty:
         errors.append(f"{m.key} minimum order is {m.min_qty}")
     return errors, warnings
@@ -112,11 +122,23 @@ def quote(design: dict) -> dict:
         else:
             unit = t.base_cost + m.unit_price(qty)
         total = round(m.setup + unit * qty, 2)
-        options.append({"method": key, "valid": not errors, "errors": errors, "warnings": warnings,
-                        "unit": round(unit, 2), "setup": m.setup, "total": total, "lead_days": m.lead_days})
+        options.append(
+            {
+                "method": key,
+                "valid": not errors,
+                "errors": errors,
+                "warnings": warnings,
+                "unit": round(unit, 2),
+                "setup": m.setup,
+                "total": total,
+                "lead_days": m.lead_days,
+            }
+        )
     valid = [o for o in options if o["valid"]]
     return {
-        "template": t.key, "quantity": qty, "options": options,
+        "template": t.key,
+        "quantity": qty,
+        "options": options,
         "cheapest": min(valid, key=lambda o: o["total"])["method"] if valid else None,
         "fastest": min(valid, key=lambda o: (o["lead_days"], o["total"]))["method"] if valid else None,
     }
@@ -127,6 +149,14 @@ def production_order(design: dict, method_key: str, ship_to: str = "") -> dict:
     if errors:
         raise ValueError("; ".join(errors))
     q = next(o for o in quote(design)["options"] if o["method"] == method_key)
-    return {"product": design["template"], "method": method_key, "quantity": design["quantity"],
-            "unit_price": q["unit"], "setup": q["setup"], "total": q["total"], "lead_days": q["lead_days"],
-            "spec": design.get("artwork") or design.get("model"), "ship_to": ship_to}
+    return {
+        "product": design["template"],
+        "method": method_key,
+        "quantity": design["quantity"],
+        "unit_price": q["unit"],
+        "setup": q["setup"],
+        "total": q["total"],
+        "lead_days": q["lead_days"],
+        "spec": design.get("artwork") or design.get("model"),
+        "ship_to": ship_to,
+    }

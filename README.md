@@ -1,5 +1,7 @@
 # make-it-real
 
+[![CI](https://github.com/eliem08/make-it-real/actions/workflows/ci.yml/badge.svg)](https://github.com/eliem08/make-it-real/actions/workflows/ci.yml)
+
 > **Canva for physical products** — design it with AI and get it made.
 
 Image models can design a mug, a hoodie or a little electronics enclosure in
@@ -37,3 +39,26 @@ make-it-real quote examples/enclosure.json
 - Supplier network adapters (print-on-demand APIs, local 3D-print farms)
 - Auto-fix: upscale artwork, reduce palette for screen print, thicken walls
 - Mockup renders + "order a sample" flow
+
+## Development
+
+Zero runtime dependencies; Python 3.10+.
+
+```bash
+python -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\activate
+pip install -e ".[dev]"
+python -m unittest discover -s tests -t .           # unit + CLI smoke tests
+ruff check . && ruff format --check .               # lint + format
+```
+
+```
+make_it_real/core.py       domain logic (pure, importable, fully tested)
+make_it_real/__main__.py   CLI (`make-it-real ...` / `python -m make_it_real ...`)
+tests/                unit tests + generated CLI smoke tests
+examples/             sample inputs used by the docs and smoke tests
+```
+
+CI runs lint and tests on Ubuntu and Windows across Python 3.10, 3.12 and 3.13.
+Design, data model, trade-offs and production path: **[ARCHITECTURE.md](ARCHITECTURE.md)**.
+
+Part of the [agent-economy](https://github.com/eliem08/agent-economy) portfolio (idea #23).
