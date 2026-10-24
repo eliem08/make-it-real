@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "make-it-real"
+version = "0.1.0"
+description = "Canva for physical products: design it with AI and get it made"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+dependencies = []
+
+[project.scripts]
+make-it-real = "make_it_real.__main__:main"
+
+[tool.setuptools]
+packages = ["make_it_real"]
