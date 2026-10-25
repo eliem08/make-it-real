@@ -5,16 +5,17 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "make-it-real"
 version = "0.1.0"
-description = "Canva for physical products: design it with AI and get it made"
+description = "Design a physical product with AI and get it made."
 readme = "README.md"
 requires-python = ">=3.10"
-license = { text = "MIT" }
+license = { text = "Proprietary" }
 authors = [{ name = "eliem08" }]
 dependencies = []
 classifiers = [
   "Programming Language :: Python :: 3",
-  "License :: OSI Approved :: MIT License",
+  "License :: Other/Proprietary License",
   "Operating System :: OS Independent",
+  "Private :: Do Not Upload",
 ]
 
 [project.optional-dependencies]

@@ -1,16 +1,45 @@
-# make-it-real
+<!-- sell-kit:start -->
+# Make It Real
 
 [![CI](https://github.com/eliem08/make-it-real/actions/workflows/ci.yml/badge.svg)](https://github.com/eliem08/make-it-real/actions/workflows/ci.yml)
 
-> **Canva for physical products** — design it with AI and get it made.
+> **Design a physical product with AI and get it made.**
 
-Image models can design a mug, a hoodie or a little electronics enclosure in
-seconds. Turning that into something a factory will actually make is where
-people get stuck: DPI, print areas, colour limits, wall thickness, minimums.
-`make-it-real` is the manufacturability + quoting engine that sits between
-the AI design and the print shop / 3D-print farm.
+**Who it's for:** Creators and small brands turning AI designs into merch, prints and 3D-printed parts.
 
-## What the MVP does
+**The problem:** AI designs look great on screen but fail at the factory: wrong DPI, too many colours, walls too thin, minimums too high.
+
+**What you get:** Manufacturability checks and side-by-side quotes across print and 3D methods, then a production order for the cheapest valid option.
+
+## Quickstart
+
+Customers receive a release archive with the wheel and the examples. Python 3.10+ and no other dependencies.
+
+```bash
+pip install make_it_real-0.1.0-py3-none-any.whl
+make-it-real templates
+make-it-real quote examples/tshirt.json
+make-it-real quote examples/enclosure.json
+```
+
+## Pricing
+
+Every plan starts with a 14-day free trial. Prices in USD, billed monthly unless noted.
+
+| Plan | Price | Includes |
+|---|---|---|
+| **Creator** | $15 per month | Unlimited checks and quotes; Print and 3D templates |
+| **Studio** | $79 per month | Production orders; Custom supplier rates; Team seats |
+| **Fulfilment** | Custom (per-order margin, contact sales) | We handle manufacturing; Quality checks; Shipping |
+
+To start a trial or buy a plan, email **sales@YOUR-DOMAIN.com**.
+
+## Licence
+
+Proprietary. Copyright (c) 2026 eliem08. All rights reserved. Use requires a paid plan or an active trial; see [LICENSE](LICENSE).
+<!-- sell-kit:end -->
+
+## What it does
 
 - **Product templates**: mug, t-shirt, poster, sticker, phone case, enclosure
   — printable area or build envelope, allowed methods, base unit cost

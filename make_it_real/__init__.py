@@ -1,4 +1,4 @@
-"""Canva for physical products: design it with AI and get it made."""
+"""Make It Real: Design a physical product with AI and get it made."""
 
 from .core import *
 
