@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass
 
 __all__ = ["Template", "Method", "TEMPLATES", "METHODS", "validate", "quote", "production_order"]
@@ -98,8 +99,16 @@ def _3d_issues(m: Method, model: dict) -> tuple[list, list]:
 def validate(design: dict, method_key: str) -> tuple[list, list]:
     t = TEMPLATES[design["template"]]
     m = METHODS[method_key]
+    qty = design["quantity"]
+    if not (isinstance(qty, int) and not isinstance(qty, bool) and qty >= 1):
+        return [f"quantity must be a whole number >= 1, got {qty!r}"], []
+    if t.kind != "print":
+        dims = {k: design["model"].get(k) for k in ("x_mm", "y_mm", "z_mm", "wall_mm")}
+        bad = {k: v for k, v in dims.items() if not (isinstance(v, (int, float)) and math.isfinite(v) and v > 0)}
+        if bad:  # a negative size would pass the build-volume check and price the part below cost
+            return [f"model dimensions must be finite numbers > 0: {bad}"], []
     errors, warnings = _print_issues(t, m, design["artwork"]) if t.kind == "print" else _3d_issues(m, design["model"])
-    if design["quantity"] < m.min_qty:
+    if qty < m.min_qty:
         errors.append(f"{m.key} minimum order is {m.min_qty}")
     return errors, warnings
 

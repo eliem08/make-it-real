@@ -39,6 +39,20 @@ class Tests(unittest.TestCase):
         with self.assertRaises(ValueError):
             production_order({**SHIRT, "quantity": 5}, "screen_print")
 
+    def test_impossible_parts_and_quantities_never_quote_as_valid(self):
+        base = {"template": "enclosure", "quantity": 25, "model": {"x_mm": 90, "y_mm": 60, "z_mm": 30, "wall_mm": 1.6}}
+        bad_designs = [
+            {**base, "model": {**base["model"], "x_mm": -90}},
+            {**base, "model": {**base["model"], "wall_mm": float("nan")}},
+            {**base, "quantity": 2.5},
+            {**base, "quantity": 0},
+        ]
+        for design in bad_designs:
+            with self.subTest(design=design):
+                q = quote(design)
+                self.assertIsNone(q["cheapest"])
+                self.assertFalse(any(o["valid"] for o in q["options"]))
+
 
 if __name__ == "__main__":
     unittest.main()
