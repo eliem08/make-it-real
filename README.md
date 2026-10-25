@@ -47,7 +47,7 @@ Every plan starts with a 14-day free trial. Prices in USD, billed monthly unless
 | **Studio** | $79 per month | Production orders; Custom supplier rates; Team seats |
 | **Fulfilment** | Custom (per-order margin, contact sales) | We handle manufacturing; Quality checks; Shipping |
 
-To start a trial or buy a plan, email **sales@YOUR-DOMAIN.com**.
+To start a trial or buy a plan, [request access](https://github.com/eliem08/make-it-real/issues/new?title=Make%20It%20Real%20trial&labels=sales).
 
 ## Licence
 
