@@ -110,6 +110,8 @@ def _shell_cm3(model):
 
 
 def quote(design: dict) -> dict:
+    if not isinstance(design, dict):
+        raise ValueError("design must be a JSON object")
     t = TEMPLATES[design["template"]]
     qty = design["quantity"]
     options = []
