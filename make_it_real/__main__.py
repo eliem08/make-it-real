@@ -7,12 +7,17 @@ import sys
 from .core import TEMPLATES, quote
 
 
-def _run(argv=None):
+def build_parser():
     ap = argparse.ArgumentParser(prog="make-it-real")
     sub = ap.add_subparsers(dest="cmd", required=True)
     sub.add_parser("templates")
     q = sub.add_parser("quote")
     q.add_argument("design")
+    return ap
+
+
+def _run(argv=None):
+    ap = build_parser()
     a = ap.parse_args(argv)
     if a.cmd == "templates":
         for t in TEMPLATES.values():

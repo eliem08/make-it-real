@@ -23,6 +23,7 @@ dev = ["ruff>=0.6"]
 
 [project.scripts]
 make-it-real = "make_it_real.__main__:main"
+make-it-real-web = "make_it_real.web:main"
 
 [project.urls]
 Repository = "https://github.com/eliem08/make-it-real"
