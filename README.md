@@ -9,7 +9,7 @@
 
 **The problem:** AI designs look great on screen but fail at the factory: wrong DPI, too many colours, walls too thin, minimums too high.
 
-**What you get:** Manufacturability checks and side-by-side quotes across print and 3D methods, then a production order for the cheapest valid option.
+**What you get:** Manufacturability checks and side-by-side quotes across print and 3D methods, then a production order (via the Python API) for the chosen option.
 
 ## Quickstart
 
@@ -42,26 +42,28 @@ Files are sent as `{"name": ..., "content": ...}`, folders as `{"files": [...]}`
 [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/eliem08/make-it-real)
 
 `render.yaml` (one click, above) and `fly.toml` (`fly launch --copy-config`) both run the Dockerfile with a persistent `/data` volume and a `/healthz` check.
-To sell self-serve, set four variables and point a Stripe webhook at `https://<your-host>/billing/webhook` (events `checkout.session.completed` and `customer.subscription.deleted`):
+To sell self-serve, set four variables (full list, names only, in `.env.example`) and point a Stripe webhook at `https://<your-host>/billing/webhook` (events `checkout.session.completed` and `customer.subscription.deleted`):
 
 | Variable | Example |
 |---|---|
 | `STRIPE_SECRET_KEY` | `sk_live_...` |
 | `STRIPE_WEBHOOK_SECRET` | `whsec_...` |
-| `STRIPE_PRICES` | `team=price_123,business=price_456` |
+| `STRIPE_PRICES` | `creator=price_123,studio=price_456` |
 | `PUBLIC_URL` | `https://make-it-real.example.com` |
 
-Buyers pick a plan on `/pricing`, pay on Stripe Checkout and see their API key once on the success page. Cancelling the subscription revokes the key. A selling server always requires a key.
+Buyers pick a plan on `/pricing`, pay on Stripe Checkout and see their API key once on the success page. Cancelling the subscription revokes the key. A selling server always requires a key. Only the monthly plans (Creator, Studio) go through Checkout, each with a 14-day free trial; Fulfilment is contact-sales only and must not be added to `STRIPE_PRICES`.
 
 ## Pricing
 
-Every plan starts with a 14-day free trial. Prices in USD, billed monthly unless noted.
+Every monthly plan starts with a 14-day free trial. Prices in USD, billed monthly unless noted.
 
 | Plan | Price | Includes |
 |---|---|---|
 | **Creator** | $15 per month | Unlimited checks and quotes; Print and 3D templates |
-| **Studio** | $79 per month | Production orders; Custom supplier rates; Team seats |
+| **Studio** | $79 per month | Everything in Creator |
 | **Fulfilment** | Custom (per-order margin, contact sales) | We handle manufacturing; Quality checks; Shipping |
+
+All plans unlock the same software in this release — there is no feature gating by plan, and no custom supplier rates or team-seat mechanism exist yet. Studio differs only in licence scope and support, to be confirmed by the owner before selling. Fulfilment is a human service arranged with the owner, not a software feature: this release places no orders with suppliers and has no supplier adapters — the production order is a dict for the buyer to send on.
 
 To start a trial or buy a plan, [request access](https://github.com/eliem08/make-it-real/issues/new?title=Make%20It%20Real%20trial&labels=sales).
 
@@ -83,7 +85,7 @@ Proprietary. Copyright (c) 2026 eliem08. All rights reserved. Use requires a pai
   - colour count limit for screen printing
   - wall thickness / build volume for 3D-printed enclosures
 - **Quote**: every valid method priced; cheapest and fastest picked
-- **Production order** JSON ready to send to a supplier
+- **Production order** dict via the Python API (`production_order`), ready to send to a supplier — not a CLI or web output
 
 ## Quickstart
 
@@ -109,6 +111,7 @@ python -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\act
 pip install -e ".[dev]"
 python -m unittest discover -s tests -t .           # unit + CLI smoke tests
 ruff check . && ruff format --check .               # lint + format
+python -m pip wheel . --no-deps -w dist            # customer wheel, as in Quickstart
 ```
 
 ```
