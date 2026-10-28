@@ -366,6 +366,7 @@ class Billing:
             "checkout/sessions",
             {
                 "mode": "subscription",
+                "subscription_data[trial_period_days]": "14",
                 "line_items[0][price]": price,
                 "line_items[0][quantity]": "1",
                 "metadata[plan]": plan,
@@ -566,7 +567,9 @@ def pricing_page(billing: Billing) -> str:
     )
     return _shell(
         "Pricing",
-        f"<h1>{e(SPEC['name'])} plans</h1><p>{e(SPEC['tagline'])}</p>{cards}"
+        f"<h1>{e(SPEC['name'])} plans</h1><p>{e(SPEC['tagline'])}</p>"
+        "<p>Monthly plans start with a 14-day free trial.</p>"
+        f"{cards}"
         "<p><small>Payments by Stripe. Your API key appears right after checkout.</small></p>",
     )
 

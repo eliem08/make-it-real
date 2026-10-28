@@ -17,6 +17,7 @@ flowchart LR
   Customer -->|order| Router[Supplier router]
   Router --> POD[Print-on-demand APIs] & Farm[3D print farms] & Factory[Injection moulders]
 ```
+Supplier routing (Router → POD/farms/moulders) is roadmap, not shipped; this release quotes and validates only.
 
 ## 3. Validation rules
 - **Print:** effective DPI = `px / inches` when fitted to the print area. Under 150 is an error,
@@ -36,11 +37,31 @@ flowchart LR
 - **Orientation-agnostic fit check.** It avoids false rejections. *Trade-off:* it ignores support
   material and overhangs. Slicer integration is on the roadmap.
 
-## 6. Production architecture
+## 6. Future production architecture (not shipped)
 A quote service (stateless), a supplier adapter layer (Printful/Printify APIs, Craftcloud-style
 3D networks, RFQ email for moulders), an order state machine (`quoted → paid → in_production →
-shipped`), and file storage for print-ready assets (PDF/X, STL/STEP).
+shipped`), and file storage for print-ready assets (PDF/X, STL/STEP). None of this is in this
+release: the shipped product validates and quotes only; supplier routing is on the roadmap.
 
 ## 7. Risks
 IP infringement in AI artwork, so trademark and logo screening is needed before production.
 Supplier quality variance is handled with sample-first orders and supplier scorecards.
+
+## 8. Limitations (sell-ready audit, 2026-10-28)
+- No supplier ordering in this release: supplier adapters, the order state machine, and
+  file storage for print-ready assets are roadmap (see §6). `production_order` (core.py:158)
+  returns a dict for the buyer to send on; it is a Python API only, not a CLI or web output.
+- No feature gating by plan: every API key unlocks the same software. Studio's former
+  "production orders / custom supplier rates / team seats" claims were removed from sales
+  copy; Fulfilment is a contact-sales human service, not a Stripe plan, and must not be
+  added to `STRIPE_PRICES`.
+- Stripe checkout now carries a 14-day trial for monthly plans
+  (`subscription_data[trial_period_days]=14` in web.py), covered by
+  tests/test_billing.py with a mocked Stripe call. Live Stripe prices and a live
+  account were not verified in this run.
+- Docker build and a live Render/Fly deployment were not verified in the audit
+  environment (no Docker binary there); Dockerfile, render.yaml, and fly.toml are the
+  same template shape as vibe-lube, but a deployment claim remains "not verified"
+  until one is made.
+- 3D pricing is a hollow-shell approximation (`shell_volume_cm³ × rate`), not a slicer
+  quote, and the orientation-agnostic fit check ignores support material and overhangs.
