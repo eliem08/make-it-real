@@ -5,6 +5,7 @@ import os
 import sys
 
 from .core import TEMPLATES, quote
+from .ops import OPS, add_ops, run_ops
 
 
 def build_parser():
@@ -13,12 +14,15 @@ def build_parser():
     sub.add_parser("templates")
     q = sub.add_parser("quote")
     q.add_argument("design")
+    add_ops(sub)
     return ap
 
 
 def _run(argv=None):
     ap = build_parser()
     a = ap.parse_args(argv)
+    if a.cmd in OPS:
+        return run_ops(a)
     if a.cmd == "templates":
         for t in TEMPLATES.values():
             area = f"{t.print_in[0]}x{t.print_in[1]} in" if t.print_in else "3D part"

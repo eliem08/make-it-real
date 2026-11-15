@@ -96,6 +96,21 @@ make-it-real quote examples/tshirt.json
 make-it-real quote examples/enclosure.json
 ```
 
+## Orders
+
+A design that passes its checks can become a tracked production order. The order freezes the price,
+method and spec when it is placed.
+
+```bash
+make-it-real order-place "Ana Diaz" examples/tshirt.json --ship-to "1 Main St, Lyon"
+make-it-real order-update PO-00001 in_production
+make-it-real order-update PO-00001 shipped --tracking 1Z999
+make-it-real orders
+```
+
+Orders live in `orders.json` (or `--store`, or `MAKE_IT_REAL_STORE`). Sending the job to a manufacturer and
+charging the customer happen outside this tool.
+
 ## Roadmap
 
 - Supplier network adapters (print-on-demand APIs, local 3D-print farms)

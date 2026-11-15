@@ -1,5 +1,34 @@
 [
  {
+  "op": "order-place",
+  "payload": {
+   "customer": "Ana Diaz",
+   "design": {
+    "name": "tshirt.json",
+    "content": "{\"template\": \"tshirt\", \"quantity\": 60, \"artwork\": {\"width_px\": 3600, \"height_px\": 4200, \"colors\": 3}}\n"
+   },
+   "ship_to": "1 Main St, Lyon"
+  }
+ },
+ {
+  "op": "order-update",
+  "payload": {
+   "order_id": "PO-00001",
+   "status": "in_production",
+   "tracking": ""
+  }
+ },
+ {
+  "op": "order-show",
+  "payload": {
+   "order_id": "PO-00001"
+  }
+ },
+ {
+  "op": "orders",
+  "payload": {}
+ },
+ {
   "op": "templates",
   "payload": {}
  },
